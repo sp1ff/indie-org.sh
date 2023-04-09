@@ -1,0 +1,16 @@
+#+TITLE: What Is indie-org.sh?
+#+SUBTITLE: What is indie-org.sh?
+#+DESCRIPTION: First post on indie-org.sh-- a demonstration site for the indie-org package.
+#+POST-TYPE: article
+#+POSSE: mastodon
+#+AUTHOR: Michael
+#+EMAIL: indie-org@pobox.com
+#+DATE: <2023-04-06 Thu 18:12>
+
+[[https://indie-org.sh][indie-org.sh]] is a demonstration site for the [[https://www.unwoundstack.com/doc/indie-org/0.5.1/indie-org.html][indie-org]] [[https://www.gnu.org/software/emacs/][Emacs]] pacakge.
+
+[[https://github.com/sp1ff/indie-org][indie-org]] is an [[https://www.gnu.org/software/emacs/Emacs][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Packaging-Basics][package]] for getting [[https://indieweb.org/static_site_generator][staticly-generated]] web sites published with [[https://orgmode.org/org.html][Org-mode]]'s [[https://orgmode.org/org.html#HTML-Export][HTML Export]] facility onto the [[https://indieweb.org/][Indieweb]]. It supports IndieAuth, sending & receiving [[https://indieweb.org/Webmention][Webmentions]], [[https://indieweb.org/POSSE][POSSE]], and generating [[https://indieweb.org/h-feed][h-feed]]s and [[https://en.wikipedia.org/wiki/RSS][RSS]] feeds for your site.
+
+The package is hosted [[https://github.com/sp1ff/indie-org][here]], and there is extensive documentation [[https://www.unwoundstack.com/doc/indie-org/0.5.1/indie-org.html][here]]. You can start reading about the Indieweb [[https://indieweb.org/][here]], and I started a series of posts on this [[mention:https://www.unwoundstack.com/blog/indieweb.html][here]].
+
+{{{date(%D %H:%M)}}}

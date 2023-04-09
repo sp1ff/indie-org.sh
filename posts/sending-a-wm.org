@@ -1,0 +1,18 @@
+#+SUBTITLE: Sending a Webmention
+#+DESCRIPTION: A post containing an example Webmention
+#+POST-TYPE: note
+#+POSSE: mastodon
+#+AUTHOR: Michael
+#+EMAIL: indie-org@pobox.com
+#+DATE: <2023-04-08 Sat 08:14>
+
+I'll mention this [[mention:https://www.unwoundstack.com/blog/indieweb.html][post]] on the Indieweb from last summer on my personal [[https://www.unwoundstack.com][site]]. The Org markup I used for that is:
+
+#+BEGIN_SRC html
+  I'll mention this [[mention:https://www.unwoundstack.com/blog/indieweb.html][post]] on...
+#+END_SRC
+
+* Tweet/Toot	:toot-text:
+
+Demonstrating sending a Webmention.
+

@@ -1,0 +1,18 @@
+#+TITLE: README
+#+SUBTITLE: source code for indie-org.sh
+#+DESCRIPTION: indie-org demo site
+#+AUTHOR: Michael
+#+EMAIL: sp1ff@pobox.com
+#+DATE: <2023-03-06 Mon 17:52>
+#+AUTODATE: t
+
+* Introduction
+
+* License
+
+This code is released under the [[https://www.gnu.org/licenses/gpl-3.0.en.html][GPL version 3]].
+* Prerequisites
+
+* Discussion
+
+* Status & Roadmap

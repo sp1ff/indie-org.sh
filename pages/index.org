@@ -1,0 +1,5 @@
+#+TITLE: indie-org.sh
+#+DATE: <2023-03-19 Sun 10:23>
+#+AUTODATE: t
+
+Putting Org mode on the Indieweb.
