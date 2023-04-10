@@ -3,16 +3,21 @@
 #+DESCRIPTION: indie-org demo site
 #+AUTHOR: Michael
 #+EMAIL: sp1ff@pobox.com
-#+DATE: <2023-03-06 Mon 17:52>
+#+DATE: <2023-04-09 Sun 17:09>
 #+AUTODATE: t
 
 * Introduction
 
+[[https://indie-org.sh][indie-org.sh]] is a demonstration site for the [[https://github.com/sp1ff/indie-org][indie-org]] [[https://www.gnu.org/software/emacs/Emacs][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Packaging-Basics][package]]. [[https://github.com/sp1ff/indie-org][indie-org]] is an [[https://www.gnu.org/software/emacs/Emacs][Emacs]] [[https://www.gnu.org/software/emacs/manual/html_mono/elisp.html#Packaging-Basics][package]] for getting [[https://indieweb.org/static_site_generator][staticly-generated]] web sites published with [[https://orgmode.org/org.html][Org-mode]]'s [[https://orgmode.org/org.html#HTML-Export][HTML Export]] facility onto the [[https://indieweb.org/][Indieweb]].
 * License
 
 This code is released under the [[https://www.gnu.org/licenses/gpl-3.0.en.html][GPL version 3]].
 * Prerequisites
 
+[[https://github.com/sp1ff/indie-org][indie-org]] requires Emacs 26.1 and Org-mode 9.5.3. The site is currently using [[https://github.com/sp1ff/indie-org][indie-org]] 0.5.3.
 * Discussion
 
+User documentation for indie-org may be found [[https://www.unwoundstack.com/doc/indie-org/0.5.1/indie-org.html][here]]. The source for [[https://indie-org.sh][indie-org.sh]] is being provided for illustration purposes.
 * Status & Roadmap
+
+The site implements IndieAuth, Webmentions & POSSE, but it's first code. Bug reports, feature requests & comments generally are [[mailto:sp1ff@pobox.com][welcome]].
