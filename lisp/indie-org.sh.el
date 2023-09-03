@@ -48,6 +48,11 @@ Includes a trailing '/'.")
 (defconst telegraph-io-token-file
   (concat (file-name-as-directory project-dir) ".telegraph-io-token"))
 
+(defconst mf2-parser-program
+  (concat (getenv "HOME") "/bin/microformats")
+  "Path to a program capable of accepting as input HTML & producing JSON
+representing microformats.")
+
 (defun iosh/relpath (level)
   "Return a relative path LEVEL deep (e.g. 2 => ../../)."
   (let ((p (mapconcat 'identity (make-list level "..") "/")))
@@ -270,7 +275,7 @@ INFO is the communications channel describing the currentpage."
     (concat
      (if (string-equal title "indie-org.sh")
          "<div style=display:none class=\"h-card\">
-<a class=\"u-url u-uid\" href=\"https://www.indie-org.sh\">
+<a class=\"u-url u-uid\" href=\"https://www.indie-org.sh/\">
 <img class=\"u-photo\" src=\"/img/avatar.png\" alt=\"\"/>
 <span class=\"p-name\">Michael</span>
 </a>
@@ -679,12 +684,6 @@ against multiple matches."
     ;; before they are transcoded to HTML.  We use this to remove sections with
     ;; silo-specific text for POSSE.
     :filters-alist   '((:filter-parse-tree . (iosh/post/filter-parse-tree))))
-  (org-export-define-derived-backend
-      'iosh/h-feed-html
-      'html
-    :translate-alist '((headline . iosh/partial-h-feed-headline)
-                       (section  . iosh/partial-h-feed-section)
-                       (template . iosh/partial-h-feed-template)))
   ;; Load the site's publication state(s)
   (let* ((env (if prod :prod :local))
          (link-home
@@ -705,14 +704,31 @@ against multiple matches."
               (indie-org-posse-make-requests)))
          (posse-responses
           (or (indie-org-state-v2-posse-responses publication-state)
-              (indie-org-posse-make-responses))))
-    ;; This is all to setup the call to `org-publish-all'.
-    (let* ((publishing-root (concat (file-name-as-directory project-dir) "www"))
-           (included-posts
+              (indie-org-posse-make-responses)))
+         (included-posts
             (indie-org-pub-find-posts
              (concat (file-name-as-directory project-dir) "posts") prod
              :exclude '("index.org" "rss.org" "h-feed.org")))
-           (org-publish-timestamp-directory (concat project-dir ".org-timestamps/"))
+         (publishing-root (concat (file-name-as-directory project-dir) "www"))
+         (h-feed-project
+          (indie-org-h-feed-enable-partial-h-feed
+           (cons
+            "h-feed"
+            (list
+             :base-directory              (concat project-dir "posts")
+             :exclude                     ".*\\.org$"
+             :html-link-org-files-as-html t
+             :html-link-use-abs-url       t
+             :include                     included-posts
+             :indie-org/publishing-root   publishing-root
+             :indie-org/webmentions-made  webmentions-made
+             :publishing-directory        (concat project-dir "www/")))
+           "h-feed.org"
+           "indie-org.sh"
+           "Putting Org Mode on the Indieweb"
+           "posts")))
+    ;; This is all to setup the call to `org-publish-all'.
+    (let* ((org-publish-timestamp-directory (concat project-dir ".org-timestamps/"))
            (org-publish-use-timestamps-flag nil)
            (org-html-head-include-default-style nil)
            (link-home
@@ -735,25 +751,7 @@ against multiple matches."
              "Putting Org Mode on the Indieweb"))
            (org-publish-project-alist
             `(("indie-org.sh" :components ("h-feed" "pages" "posts" "rss"))
-              ("h-feed"
-               :auto-sitemap                t
-               :base-directory              ,(concat project-dir "posts")
-               :description                 "Putting Org Mode on the Indieweb"
-               :exclude                     ".*\\.org$"
-               :h-feed-backend              iosh/h-feed-html
-               :hfeed-name                  "indie-org.sh"
-               :html-link-org-files-as-html t
-               :html-link-use-abs-url       t
-               :include                     ,included-posts
-               :indie-org/publishing-root   ,publishing-root
-               :indie-org/webmentions-made  ,webmentions-made
-               :publishing-directory        ,(concat project-dir "www/")
-               :publishing-function         indie-org-h-feed--publish
-               :sitemap-filename            "h-feed.org"
-               :sitemap-format-entry        indie-org-h-feed--format-entry
-               :sitemap-function            indie-org-h-feed--format-sitemap
-               :sitemap-sort-files          anti-chronologically
-               :with-toc                    nil)
+              ,h-feed-project
               ("pages"
                :base-directory             ,(concat project-dir "pages")
                :html-doctype               "html4-strict"
@@ -940,6 +938,55 @@ PROD shall be t to select production & nil to select staging."
   (indie-org-enable)
   (indie-org-pub-pp-drafts
    (concat (file-name-as-directory project-dir) "posts")))
+
+(defun iosh/check-mf2 ()
+  "Check microformats in the exported HTML."
+  (indie-org-enable)
+  (let* ((mf
+          (json-parse-string
+           (with-temp-buffer
+             (call-process
+              mf2-parser-program
+              (concat
+               (file-name-as-directory project-dir)
+               "www/index.html")
+              t)
+             (buffer-string))
+           :object-type 'plist))
+         (items (plist-get mf :items))
+         (h-feeds
+          (seq-filter
+           (lambda (plist)
+             (equal (plist-get plist :type) ["h-feed"]))
+           items))
+         (h-cards
+          (seq-filter
+           (lambda (plist)
+             (equal (plist-get plist :type) ["h-card"]))
+           items)))
+    (unless (eq 1 (length h-cards))
+      (error (format "There were %d h-cards" (length h-cards))))
+    (indie-org-mf-check-entity
+     (car h-cards)
+     "h-card"
+     '(:note
+       ["Putting Org Mode on the Indieweb."]
+       :email ["mailto:indie-org@pobox.com"]
+       :url ["https://www.indie-org.sh/"]))
+    (unless (eq 1 (length h-feeds))
+      (error (format "There were %d h-feeds" (length h-feeds))))
+    (indie-org-mf-check-entity
+     (car h-feeds)
+     "h-feed"
+     '(:summary
+       ["Putting Org Mode on the Indieweb"]
+       :name
+       ["indie-org.sh"]))
+    (indie-org-mf-check-children
+     (car h-feeds)
+     "h-entry"
+     '(:published :summary :url :name)
+     t)))
 
 (provide 'indie-org.sh)
 ;;; indie-org.sh.el ends here

@@ -17,6 +17,7 @@ all stg: lisp/indie-org.sh.el res/style.css $(WWW_IMGS)
 	cp -v res/style.css www/res
 	$(EMACS) $(EMACSFLAGS) -l indie-org.sh.el --eval '(let ((print-level nil) (print-length nil)) (toggle-debug-on-error) (iosh/publish nil))'
 	find www -iname '*~' -exec rm '{}' ';'
+	$(EMACS) $(EMACSFLAGS) -l indie-org.sh.el --eval '(let ((print-level nil) (print-length nil)) (toggle-debug-on-error) (iosh/check-mf2))'
 	$(EMACS) $(EMACSFLAGS) -l indie-org.sh.el --eval '(let ((print-level nil) (print-length nil)) (toggle-debug-on-error) (iosh/send-webmentions nil))'
 
 prod: lisp/indie-org.sh.el res/style.css
