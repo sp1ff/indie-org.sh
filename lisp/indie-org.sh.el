@@ -81,8 +81,8 @@ INFO is the communications channel describing the currentpage."
            (indie-org-pub-webmentions-received-at-pub info webmentions-received)
            (lambda (lhs rhs)
              (<
-              (float-time (indie-org-received-wm-time-received lhs))
-              (float-time (indie-org-received-wm-time-received rhs)))))))
+              (float-time (indie-org-webmentions-received-wm-time-received lhs))
+              (float-time (indie-org-webmentions-received-wm-time-received rhs)))))))
 
     (if posse-responses
         (concat
@@ -750,28 +750,7 @@ against multiple matches."
              "indie-org.sh"
              "Putting Org Mode on the Indieweb"))
            (org-publish-project-alist
-            `(("indie-org.sh" :components ("h-feed" "pages" "posts" "rss"))
-              ,h-feed-project
-              ("pages"
-               :base-directory             ,(concat project-dir "pages")
-               :html-doctype               "html4-strict"
-               :html-head-extra            ,(iosh/extra-head 0)
-               :html-postamble             iosh/page-postamble
-               :publishing-directory       ,(concat project-dir "www")
-               ;; The outer list is a work-around to a peculiarity (bug?) in `org-publish-file'-- in the `pcase'
-               ;; statment, `(pred lisp)' will evaluate to true for the resulting lambda, which is not what
-               ;; we want. Wrapping in a list will make it work.
-               :publishing-function        ,(list
-                                             (lambda (plist filename pub-dir)
-                                               (iosh/publish-page plist filename pub-dir 'iosh/page-html)))
-               :indie-org/webmentions-made ,webmentions-made
-               :indie-org/publishing-root  ,publishing-root
-               :iosh/posse-requests        ,posse-requests
-               :iosh/posse-responses       ,posse-responses
-               :iosh/webmentions-received  ,webmentions-received
-               :section-numbers            nil
-               :with-author                nil
-               :with-toc                   nil)
+            `(("indie-org.sh" :components ("posts" "h-feed" "pages" "rss"))
               ("posts"
                :auto-sitemap               t
                :base-directory             ,(concat project-dir "posts")
@@ -797,6 +776,27 @@ against multiple matches."
                :with-author                nil
                :with-date                  t
                :with-title                 t
+               :with-toc                   nil)
+              ,h-feed-project
+              ("pages"
+               :base-directory             ,(concat project-dir "pages")
+               :html-doctype               "html4-strict"
+               :html-head-extra            ,(iosh/extra-head 0)
+               :html-postamble             iosh/page-postamble
+               :publishing-directory       ,(concat project-dir "www")
+               ;; The outer list is a work-around to a peculiarity (bug?) in `org-publish-file'-- in the `pcase'
+               ;; statment, `(pred lisp)' will evaluate to true for the resulting lambda, which is not what
+               ;; we want. Wrapping in a list will make it work.
+               :publishing-function        ,(list
+                                             (lambda (plist filename pub-dir)
+                                               (iosh/publish-page plist filename pub-dir 'iosh/page-html)))
+               :indie-org/webmentions-made ,webmentions-made
+               :indie-org/publishing-root  ,publishing-root
+               :iosh/posse-requests        ,posse-requests
+               :iosh/posse-responses       ,posse-responses
+               :iosh/webmentions-received  ,webmentions-received
+               :section-numbers            nil
+               :with-author                nil
                :with-toc                   nil)
               ,rss-project)))
       ;; OK-- do it!
